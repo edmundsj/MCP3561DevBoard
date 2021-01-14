@@ -1271,8 +1271,6 @@ Wire Wire Line
 	1900 7100 1900 7150
 Wire Wire Line
 	1350 6800 1900 6800
-Wire Wire Line
-	1900 7150 2300 7150
 Connection ~ 1900 7150
 Wire Wire Line
 	1900 7150 1900 7200
@@ -1479,4 +1477,17 @@ Wire Wire Line
 	1150 5000 1150 5150
 Wire Wire Line
 	1350 5150 1150 5150
+$Comp
+L Connector:TestPoint TP9
+U 1 1 604E5F5B
+P 2450 7150
+F 0 "TP9" H 2508 7268 50  0000 L CNN
+F 1 "EXT_SYNC" H 2508 7177 50  0000 L CNN
+F 2 "my_library_foot:TestPoint_Keystone_5000-5004_Miniature" H 2650 7150 50  0001 C CNN
+F 3 "~" H 2650 7150 50  0001 C CNN
+	1    2450 7150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1900 7150 2450 7150
 $EndSCHEMATC
