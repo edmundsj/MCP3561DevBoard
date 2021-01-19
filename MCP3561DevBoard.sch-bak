@@ -1478,12 +1478,12 @@ Wire Wire Line
 Wire Wire Line
 	1350 5150 1150 5150
 $Comp
-L Connector:TestPoint TP?
+L Connector:TestPoint TP9
 U 1 1 604E5F5B
 P 2450 7150
-F 0 "TP?" H 2508 7268 50  0000 L CNN
+F 0 "TP9" H 2508 7268 50  0000 L CNN
 F 1 "EXT_SYNC" H 2508 7177 50  0000 L CNN
-F 2 "" H 2650 7150 50  0001 C CNN
+F 2 "my_library_foot:TestPoint_Keystone_5000-5004_Miniature" H 2650 7150 50  0001 C CNN
 F 3 "~" H 2650 7150 50  0001 C CNN
 	1    2450 7150
 	1    0    0    -1  
