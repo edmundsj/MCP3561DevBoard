@@ -421,8 +421,6 @@ F 3 "" H 1100 6300 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	1100 6300 1100 6150
-Text Label 4200 5150 0    50   ~ 0
-VIN
 $Comp
 L power:GND #PWR029
 U 1 1 6002AE5C
@@ -452,7 +450,7 @@ AVDD
 Wire Wire Line
 	6150 4900 6150 4650
 Text Label 6150 4850 1    50   ~ 0
-VREF
+VREF_F
 Wire Wire Line
 	6400 4900 6400 4650
 Text Label 6400 4850 1    50   ~ 0
@@ -634,7 +632,7 @@ U 1 1 60059281
 P 2550 5850
 F 0 "U3" H 2994 5896 50  0000 L CNN
 F 1 "TLV9051" H 2994 5805 50  0000 L CNN
-F 2 "Package_TO_SOT_SMD:SOT-353_SC-70-5" H 2750 5850 50  0001 C CNN
+F 2 "Package_TO_SOT_SMD:SOT-23-5_HandSoldering" H 2750 5850 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tlv172.pdf" H 2550 5850 50  0001 C CNN
 	1    2550 5850
 	1    0    0    -1  
@@ -660,40 +658,38 @@ Wire Wire Line
 $Comp
 L Device:R_US R5
 U 1 1 600653AE
-P 4050 4650
-F 0 "R5" H 4118 4696 50  0000 L CNN
-F 1 "3k" H 4118 4605 50  0000 L CNN
-F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 4090 4640 50  0001 C CNN
-F 3 "~" H 4050 4650 50  0001 C CNN
-	1    4050 4650
+P 4800 4350
+F 0 "R5" H 4868 4396 50  0000 L CNN
+F 1 "30k" H 4868 4305 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 4840 4340 50  0001 C CNN
+F 3 "~" H 4800 4350 50  0001 C CNN
+	1    4800 4350
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:R_US R6
 U 1 1 60065F0A
-P 4050 5150
-F 0 "R6" H 4118 5196 50  0000 L CNN
-F 1 "1k" H 4118 5105 50  0000 L CNN
-F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 4090 5140 50  0001 C CNN
-F 3 "~" H 4050 5150 50  0001 C CNN
-	1    4050 5150
+P 4800 4850
+F 0 "R6" H 4868 4896 50  0000 L CNN
+F 1 "10k" H 4868 4805 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 4840 4840 50  0001 C CNN
+F 3 "~" H 4800 4850 50  0001 C CNN
+	1    4800 4850
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4050 5000 4050 4900
+	4800 4700 4800 4600
 $Comp
 L power:GND #PWR018
 U 1 1 60067B1F
-P 4050 5400
-F 0 "#PWR018" H 4050 5150 50  0001 C CNN
-F 1 "GND" H 4055 5227 50  0000 C CNN
-F 2 "" H 4050 5400 50  0001 C CNN
-F 3 "" H 4050 5400 50  0001 C CNN
-	1    4050 5400
+P 4800 5000
+F 0 "#PWR018" H 4800 4750 50  0001 C CNN
+F 1 "GND" H 4805 4827 50  0000 C CNN
+F 2 "" H 4800 5000 50  0001 C CNN
+F 3 "" H 4800 5000 50  0001 C CNN
+	1    4800 5000
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	4050 5400 4050 5300
 Wire Wire Line
 	1800 5950 1800 6450
 Wire Wire Line
@@ -836,11 +832,11 @@ $EndComp
 Wire Wire Line
 	1900 5750 2350 5750
 Wire Wire Line
-	4050 4900 4300 4900
-Connection ~ 4050 4900
+	4800 4600 5050 4600
+Connection ~ 4800 4600
 Wire Wire Line
-	4050 4900 4050 4800
-Text Label 4150 4900 0    50   ~ 0
+	4800 4600 4800 4500
+Text Label 4900 4600 0    50   ~ 0
 VOS
 Wire Wire Line
 	1600 5950 1800 5950
@@ -869,10 +865,6 @@ Wire Wire Line
 	9800 2750 10050 2750
 Text Label 9850 2750 0    50   ~ 0
 SCK
-Wire Wire Line
-	7600 2350 7200 2350
-Text Label 7350 2350 0    50   ~ 0
-~IRQ
 Wire Wire Line
 	7600 2450 7200 2450
 Text Label 7350 2450 0    50   ~ 0
@@ -908,7 +900,7 @@ Wire Wire Line
 Connection ~ 5200 5200
 Wire Wire Line
 	4800 5200 4550 5200
-Text Label 4600 5200 0    50   ~ 0
+Text Label 4550 5200 0    50   ~ 0
 VADC
 Text Label 5400 5200 0    50   ~ 0
 VADC_F
@@ -1490,4 +1482,37 @@ F 3 "~" H 2650 7150 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	1900 7150 2450 7150
+$Comp
+L Device:EMI_Filter_LCL FL?
+U 1 1 601181D7
+P 4400 4300
+F 0 "FL?" H 4400 4617 50  0000 C CNN
+F 1 "EMI_Filter_LCL" H 4400 4526 50  0000 C CNN
+F 2 "my_library_foot:0805_3TERM" V 4400 4300 50  0001 C CNN
+F 3 "http://www.murata.com/~/media/webrenewal/support/library/catalog/products/emc/emifil/c31e.ashx?la=en-gb" V 4400 4300 50  0001 C CNN
+	1    4400 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 601197C2
+P 4400 4400
+F 0 "#PWR?" H 4400 4150 50  0001 C CNN
+F 1 "GND" H 4405 4227 50  0000 C CNN
+F 2 "" H 4400 4400 50  0001 C CNN
+F 3 "" H 4400 4400 50  0001 C CNN
+	1    4400 4400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4700 4200 4800 4200
+Text Label 4750 4200 0    50   ~ 0
+VREF_F
+Connection ~ 4800 4200
+Wire Wire Line
+	4800 4200 4900 4200
+Text Label 7350 2350 0    50   ~ 0
+~IRQ
+Wire Wire Line
+	7600 2350 7200 2350
 $EndSCHEMATC

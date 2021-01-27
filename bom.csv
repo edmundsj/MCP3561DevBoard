@@ -4,6 +4,7 @@ Part Name,,Source, Catalog Number,Link, Quantity
 ">  U5, U6",ADP3330-3.3,Digikey,ADP3330ARTZ3.3-RL7CT-ND,https://www.digikey.com/en/products/detail/analog-devices-inc/ADP3330ARTZ3-3-RL7/1007321?s=N4IgTCBcDaIIIBEAKBmNAGOAlAKgLRQDoUBaLAGQHYBhHEgOQRAF0BfIA,2
     U4,ADR366,Digikey,ADR366AUJZ-REEL7,https://www.digikey.com/en/products/detail/analog-devices-inc/ADR366AUJZ-REEL7/996001,1
     U3,TLV9051,Digikey,TLV9051IDBVR,https://www.digikey.com/en/products/detail/texas-instruments/TLV9051IDBVR/10715425,1
+FL1-3,LCL Filter,Digikey,490-6957-1-ND,https://www.digikey.com/en/products/detail/murata-electronics/NFL21SP157X1C3D/2595155?s=N4IgTCBcDaICwE4AMBaAbAgrAdhQRhQDkAREAXQF8g,3
 >  R8-R12,10R,Digikey,,,4
 ">  R3, R6",1k,Digikey,,,2
     R7,100R,Digikey,,,1
