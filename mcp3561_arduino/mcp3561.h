@@ -22,6 +22,7 @@
 #define CONFIG0_CLK_SEL_MASK 0b00110000
 #define CONFIG0_CLK_SEL_POS 4
 #define CONFIG0_CLK_SEL_INT 0b11 << CONFIG0_CLK_SEL_POS
+#define CONFIG0_CLK_SEL_EXT 0b00 << CONFIG0_CLK_SEL_POS
 #define CONFIG0_ADC_MODE_POS 0
 #define CONFIG0_ADC_MODE_CONV 0b11 << CONFIG0_ADC_MODE_POS
 
@@ -46,59 +47,80 @@
 #define MCLK_PIN 7
 #define MISO_PIN 12
 #define EXTERNAL_SYNC_PIN 5
+#define MAX_SYNCHRONIZATION_POINTS 5000
 
 // USEFUL FAST COMMANDS AND OTHER COMMANDS
 // Resets the device registers to their default  values
 #define DEVICE_RESET_COMMAND DEVICE_ADDRESS_BYTE | 0b111000
 
-void readRegisters(void);
-void verifyRegisters(void);
+class MCP3561 {
+  public: 
+    // Class methods
+    void readRegisters(void);
+    void verifyRegisters(void);
+    void writeRegisterDefaults(void);
+    void printRegisters(void);
+    void Reset(void);
+    static void readADCData(void);
+    static void recordSync(void);
 
-byte config0_data;
-byte config1_data;
-byte config2_data;
-byte config3_data;
-byte irq_data;
-byte mux_data;
-uint32_t scan_data; // A 24-bit register
-uint32_t timer_data; // A 24-bit register
-uint32_t offsetcal_data; // A 24-bit register
-uint32_t gaincal_data; // A 24-bit register
-uint32_t reserved_1_data;
-byte reserved_2_data;
-byte lock_data;
-uint16_t reserved_3_data;
-uint16_t crccfg_data;
-byte adc_data[3];
-uint32_t adc_sample;
+    // Static class variables used in interrupts
+    static uint32_t data_counter;
+    static uint32_t data_points_to_sample;
+    static byte adc_data[3];
+    static uint32_t adc_sample;
+    static uint32_t synchronization_data[MAX_SYNCHRONIZATION_POINTS];
+    static uint32_t synchronization_counter;
 
-uint32_t data_counter;
-uint32_t data_points_to_sample = 1;
+    // Class variables
+    byte config0_data;
+    byte config1_data;
+    byte config2_data;
+    byte config3_data;
+    byte irq_data;
+    byte mux_data;
+    uint32_t scan_data; // A 24-bit register
+    uint32_t timer_data; // A 24-bit register
+    uint32_t offsetcal_data; // A 24-bit register
+    uint32_t gaincal_data; // A 24-bit register
+    uint32_t reserved_1_data;
+    byte reserved_2_data;
+    byte lock_data;
+    uint16_t reserved_3_data;
+    uint16_t crccfg_data;
+    
+    bool config0_ok = false; 
+    bool config1_ok = false;
+    bool config2_ok = false;
+    bool config3_ok = false;
+    bool irq_ok = false;
+    bool mux_ok = false;
+    bool scan_ok = false;
+    bool timer_ok = false;
+    bool offsetcal_ok = false;
+    bool gaincal_ok = false;
+    bool reserved1_ok = false;
+    bool reserved2_ok = false;
+    bool lock_ok = false;
+    bool reserved3_ok = false;
+    bool crccfg_ok = false;
+};
 
-bool config0_ok = false; 
-bool config1_ok = false;
-bool config2_ok = false;
-bool config3_ok = false;
-bool irq_ok = false;
-bool mux_ok = false;
-bool scan_ok = false;
-bool timer_ok = false;
-bool offsetcal_ok = false;
-bool gaincal_ok = false;
-bool reserved1_ok = false;
-bool reserved2_ok = false;
-bool lock_ok = false;
-bool reserved3_ok = false;
-bool crccfg_ok = false;
+uint32_t MCP3561::data_counter;
+uint32_t MCP3561::data_points_to_sample = 1;
+byte MCP3561::adc_data[3];
+uint32_t MCP3561::adc_sample = 0;
+uint32_t MCP3561::synchronization_data[MAX_SYNCHRONIZATION_POINTS];
+uint32_t MCP3561::synchronization_counter = 0;
 
-void writeRegisterDefaults(void) {
+void MCP3561::writeRegisterDefaults(void) {
   byte command_byte = 0;
   byte data_byte = 0;
   
   // First write to CONFIG0 register
   command_byte = CONFIG0_WRITE;
   // Configure the ADC to read use its own internal clock and output it to the MCLK pin
-  data_byte = CONFIG0_CLK_SEL_INT;
+  data_byte = CONFIG0_CLK_SEL_EXT;
   // Ronfigure the ADC to be in conversion mode rather than shutdown mode
   data_byte |= CONFIG0_ADC_MODE_CONV;
   digitalWrite(CS_PIN, LOW);
@@ -138,7 +160,13 @@ void writeRegisterDefaults(void) {
   digitalWrite(CS_PIN, HIGH);
 }
 
-void readRegisters(void) {
+void MCP3561::Reset(void) {
+  MCP3561::synchronization_counter = 0;
+  writeRegisterDefaults();
+  MCP3561::data_counter = 0;
+  MCP3561::data_points_to_sample = 1;
+}
+void MCP3561::readRegisters(void) {
   digitalWrite(CS_PIN, LOW);
   SPI.transfer(IREAD_COMMAND);
   // First, read the ADCDATA register
@@ -181,9 +209,41 @@ void readRegisters(void) {
   temp0 = SPI.transfer(0);
   temp1 = SPI.transfer(0);
   crccfg_data = (temp1 << 8) | temp0;
-
   digitalWrite(CS_PIN, HIGH);
+
+}
+
+// PARTIALLY COMPLETE. DOES NOT VERIFY ALL REGISTERS.
+void MCP3561::verifyRegisters(void) {
+  if(config0_data == 0b00000011) config0_ok = true;
+  if(config1_data == 0b00001100) config1_ok = true;
+  if(config2_data == 0b10001011) config2_ok = true;
+  if(config3_data == 0b11000000) config3_ok = true;
+  if(irq_data == 0b00110111) irq_ok = true;
+
+  bool all_ok = config0_ok && config1_ok && config2_ok && config3_ok && irq_ok;
+
+  if(all_ok == true) {
+    Serial.println("ALL REGISTERS OK.");
+  }
+  else
+  {
+    Serial.println("SOME REGISTER NOT OK. REGISTER TABLE:");
+    Serial.print("CONFIG0: ");
+    Serial.println(config0_ok ? "OK" : "BAD");
+    Serial.print("CONFIG1: ");
+    Serial.println(config1_ok ? "OK" : "BAD");
+    Serial.print("CONFIG2: ");
+    Serial.println(config2_ok ? "OK" : "BAD");
+    Serial.print("CONFIG3: ");
+    Serial.println(config3_ok ? "OK" : "BAD");
+    Serial.print("IRQ: ");
+    Serial.println(irq_ok ? "OK" : "BAD");
+  }
   
+}
+
+void MCP3561::printRegisters(void) {
   Serial.print("ADCDATA Register: ");
   Serial.print(adc_data[2], BIN);
   Serial.print(adc_data[1], BIN);
@@ -219,53 +279,28 @@ void readRegisters(void) {
   Serial.print("CRCCFG: ");
   Serial.println(scan_data, BIN);
   Serial.println("-----------------------------");
-
 }
 
-void verifyRegisters(void) {
-  if(config0_data == 0b00110011) config0_ok = true;
-  if(config1_data == 0b00001100) config1_ok = true;
-  if(config2_data == 0b10001011) config2_ok = true;
-  if(config3_data == 0b11000000) config3_ok = true;
-  if(irq_data == 0b00110111) irq_ok = true;
-
-  bool all_ok = config0_ok && config1_ok && config2_ok && config3_ok && irq_ok;
-
-  if(all_ok == true) {
-    Serial.println("ALL REGISTERS OK.");
-  }
-  else
-  {
-    Serial.println("SOME REGISTER NOT OK. REGISTER TABLE:");
-    Serial.print("CONFIG0: ");
-    Serial.println(config0_ok ? "OK" : "BAD");
-    Serial.print("CONFIG1: ");
-    Serial.println(config1_ok ? "OK" : "BAD");
-    Serial.print("CONFIG2: ");
-    Serial.println(config2_ok ? "OK" : "BAD");
-    Serial.print("CONFIG3: ");
-    Serial.println(config3_ok ? "OK" : "BAD");
-    Serial.print("IRQ: ");
-    Serial.println(irq_ok ? "OK" : "BAD");
-  }
-  
-}
-
-void readADCData(void) {
-  if(data_counter < data_points_to_sample) {
+void MCP3561::readADCData(void) {
+  if(MCP3561::data_counter < MCP3561::data_points_to_sample) {
     digitalWrite(CS_PIN, LOW);
     SPI.transfer(SREAD_DATA_COMMAND);
-    adc_data[2] = SPI.transfer(0);
-    adc_data[1] = SPI.transfer(0);
-    adc_data[0] = SPI.transfer(0);
-    adc_sample = (adc_data[2] << 16) | (adc_data[1] << 8) | (adc_data[0]);
+    MCP3561::adc_data[0] = SPI.transfer(0);
+    MCP3561::adc_data[1] = SPI.transfer(0);
+    MCP3561::adc_data[2] = SPI.transfer(0);
+    MCP3561::adc_sample = (adc_data[2] << 16) | (adc_data[1] << 8) | (adc_data[0]);
     digitalWrite(CS_PIN, HIGH);
-    Serial.println(adc_sample);
-    data_counter += 1;
+    Serial.write(MCP3561::adc_data, 3);
+    MCP3561::data_counter += 1;
   }
   else {
     detachInterrupt(digitalPinToInterrupt(IRQ_PIN));
     detachInterrupt(digitalPinToInterrupt(EXTERNAL_SYNC_PIN));
-    data_counter = 0;
+    MCP3561::data_counter = 0;
   }
+}
+
+void MCP3561::recordSync() {
+  MCP3561::synchronization_data[MCP3561::synchronization_counter] = MCP3561::data_counter;
+  MCP3561::synchronization_counter += 1;
 }

@@ -1,9 +1,22 @@
 MCP3561 Development Board
 ============================
 
+Getting Started
+------------------
+- NOTE: To run unit tests with a different sampling frequency than 4.8kHz, you need to change the sampling frequency in the unit test suite.
+Run:
+.. code-block::
+	
+	python -m unittest discover
+
+This should cause 20 unit tests to be run (1 may be skipped). Two should fail if the EXT_SYNC signal is not receiving a 1kHz pulse train, and 17 should pass.
+
 Issues in version 1
 ---------------------
-- U3 (TLV opamp) package is incorrect. TSOT353, actual package SOT23-5.
+- [FIXED v2] U3 (TLV opamp) package is incorrect. TSOT353, actual package SOT23-5.
+
+Test Data
+
 
 Appendix - Notes
 -------------------
@@ -26,3 +39,13 @@ Appendix - Notes
 - Everything is now working, sampling at 4.8kHz. 
 - Looks like I can sample at 36.8kHz, but the data is in steps of 180, not steps of 1 anymore. That's obnoxious. For now I'll just stick with a sampling rate of 4.8kHz and characterize the ADC, then switch to a higher sampling rate.
 - For now, I have commented out all the motor and synchronization code, but even the identify code is not working. Ported code is now working.
+- I will test using a 10MHz clock at the input
+
+Unit Test Debugging
+____________________
+- I am having some issues getting 300,000 bytes back from the arduino. I suspect this is a time-out error, as we need to wait quite a long time to get back this data. I'm receiving around 40kB, which indicates we only take ~10 measurements. I'm going to try to do this manually.
+- The teensy itself can send 100k samples no problem.
+- Sure enough, our Measure() method is terminating too early. Fixed it, now it's working up to 100k measurements.
+- All motor communication unit tests are now passing, as are all measurement tests. Still failing synchronization tests, which means I will have to solder on the connector. Time to do that.
+- Today the measurement frequency is 4.58kHz. This is significantly lower than yesterday, it looks like the internal clock drifts quite a bit. Let's drive the clock using the Teensy to try to get a more reliable sampling rate.
+- Synchronization is not currently working. I'm going to let that issue rest for now. The discrepancy is small. 
