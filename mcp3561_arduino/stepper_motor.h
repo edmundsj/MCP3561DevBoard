@@ -1,4 +1,13 @@
 #include <Arduino.h>
+#define MC1 32
+#define MC2 31
+#define MC3 30
+#define MC4 29
+#define MC5 25
+#define MC6 24
+#define MC7 10
+#define MC8 6
+
 
 class StepperMotor {
   public:
@@ -15,36 +24,36 @@ class StepperMotor {
     bool motorEnabled;
     int stepsRemaining; // this should be an int to avoid underflow errors.
     bool motorRotating;
-    const int directionPin = 1;
     int motorPosition;
     int motorDirection;
   private:
-    const int stepPin = 32; // NEEDS TO BE DETERMINED
-    const int sleepPin = 31;
-    const int resetPin = 30;
-    const int ms1Pin = 29;
-    const int ms2Pin = 25;
-    const int ms3Pin = 24;
-    const int enablePin = 10;
-    const int vddPin = 6;
+    const int directionPin = MC1;
+    const int stepPin = MC2;
+    const int sleepPin = MC3;
+    const int resetPin = MC4;
+    const int ms3Pin = MC5;
+    const int ms2Pin = MC6;
+    const int ms1Pin = MC7;
+    const int enablePin = MC8;
 };
 
 StepperMotor::StepperMotor(void) {
   
-  pinMode(this->vddPin, OUTPUT);
   pinMode(this->directionPin, OUTPUT); 
   pinMode(this->stepPin, OUTPUT);
   pinMode(this->sleepPin, OUTPUT);
-  pinMode(this->enablePin, OUTPUT);
   pinMode(this->resetPin, OUTPUT);
   pinMode(this->ms3Pin, OUTPUT);
   pinMode(this->ms2Pin, OUTPUT);
   pinMode(this->ms1Pin, OUTPUT);
+  pinMode(this->enablePin, OUTPUT);
   this->Reset();
  
 }
 
 void StepperMotor::beginRotation(int numberSteps) {
+  this->motorRotating = true;
+  
   if(numberSteps < 0) {
     this->setDirection(1);
     numberSteps *= -1;
@@ -53,7 +62,7 @@ void StepperMotor::beginRotation(int numberSteps) {
     this->setDirection(0);
   }
   this->stepsRemaining = numberSteps;
-  this->motorRotating = true;
+  
 }
 
 void StepperMotor::Rotate(void) {
@@ -92,9 +101,7 @@ void StepperMotor::Reset() {
   this->motorEnabled = 1;
   this->stepsRemaining = 0;
   this->motorRotating = false;
-  digitalWrite(this->vddPin, HIGH);
-  
-  this->Enable();
+  this->Disable();
   
   digitalWrite(this->ms3Pin, HIGH); // use the finest possible (1/16 step) microstepping
   digitalWrite(this->ms2Pin, HIGH);
@@ -102,10 +109,9 @@ void StepperMotor::Reset() {
 
   digitalWrite(this->directionPin, this->motorDirection);
   digitalWrite(this->stepPin, HIGH);
-  
-  digitalWrite(this->enablePin, LOW); // enable is active low
+
   digitalWrite(this->sleepPin, HIGH); // sleep is active low
   digitalWrite(this->resetPin, HIGH); // reset is active low
   digitalWrite(this->resetPin, LOW); // reset the controller
-  digitalWrite(this->resetPin, HIGH);
+  digitalWrite(this->resetPin, HIGH); // go back to an on state
 }

@@ -2,14 +2,6 @@
 #include "mcp3561.h"
 #include "stepper_motor.h"
 
-
-
-/** Base class that implements communication to and from an external Serial or USB interface via
-* According to the SCPI specification, the measurement process is broken down into several stages.
-* First, there is configuration of the measurement done via the CONFigure command. The INITiate then
-* physically performs the measurement, and FETCh? does any necessary postprocessing and returns the data.
-* I will implement MEASURE, CONFigure, and FETCH, as I don't see a purpose to implement INITiate or READ.
-*/
 scpi_error_t identify(struct scpi_parser_context* context, struct scpi_token* command);
 scpi_error_t measure(struct scpi_parser_context* context, struct scpi_token* command);
 scpi_error_t configure(struct scpi_parser_context* context, struct scpi_token* command);
@@ -50,7 +42,7 @@ scpi_error_t identify(struct scpi_parser_context* context, struct scpi_token* co
   scpi_free_tokens(command);
   return SCPI_SUCCESS;
 }
-
+ 
 scpi_error_t resetDevice(struct scpi_parser_context* context, struct scpi_token* command)
 {
   detachInterrupt(digitalPinToInterrupt(IRQ_PIN));
@@ -63,7 +55,7 @@ scpi_error_t resetDevice(struct scpi_parser_context* context, struct scpi_token*
 
 scpi_error_t measure(struct scpi_parser_context* context, struct scpi_token* command)
 {
-  //AD7766::synchronizationCounter = 0;
+  adc.synchronization_counter = 0;
   adc.data_counter = 0;
   Serial.print("#");
   attachInterrupt(digitalPinToInterrupt(IRQ_PIN), adc.readADCData, FALLING);
@@ -122,7 +114,6 @@ scpi_error_t sendSyncData(struct scpi_parser_context* context, struct scpi_token
     Serial.write(adc.synchronization_data[i] >> 8);
     Serial.write(adc.synchronization_data[i]); // LSB last. Only send 24 bits, should be enough for even 100s of data.
   }
-  
   scpi_free_tokens(command);
   return SCPI_SUCCESS;
 }
@@ -172,8 +163,6 @@ scpi_error_t rotateMotor(struct scpi_parser_context* context, struct scpi_token*
   
   motor.beginRotation(motorSteps);
   motorTimer.begin(interruptRotate, 1000*motor.motorPeriod);
-  
-  //motor.Rotate(motorSteps);
   
   scpi_free_tokens(command);
   return SCPI_SUCCESS;
