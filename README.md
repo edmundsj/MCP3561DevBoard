@@ -3,14 +3,13 @@ MCP3561 Development Board
 
 Getting Started
 ------------------
-NOTE: To run unit tests with a different sampling frequency than 4.8kHz, you need to change the sampling frequency in the unit test suite. Run:
-
-.. code-block::
-	
-	python -m unittest discover
-
-This should cause 20 unit tests to be run (1 may be skipped). Two should fail if the EXT_SYNC signal is not receiving a 1kHz pulse train, and 17 should pass.
-
+Using this dev board requires you have python installed on your computer, as
+well as the Teensyduino IDE. You must then upload the code in ``arduino_code/``
+to the Teensy being used for measurement, which I have written to communicate
+via the arduino ``Serial()`` interface (USB) using the SCPI language. Feel free
+to communicate with it using your own scripts, but I have written a python
+implementation which can be found in ``MCP3561.py``
+[here](https://github.com/edmundsj/AD7766_Python.git).
 
 Version 1 Features
 ---------------------------
