@@ -1,7 +1,6 @@
 # MCP3561 Development Board
-I developed this PCB for communication with an MCP3561 ADC, a <153kSpS
-sigma-delta (oversampling) ADC capable of 
-microcontroller
+Development board for MCP3561 ADC, a <153kSpS
+sigma-delta (oversampling) ADC capable of ~108dB SNR.
 
 ## Features
 - 3.3V on-board reference
