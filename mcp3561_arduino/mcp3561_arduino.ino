@@ -46,7 +46,7 @@ void setup() {
   adc.writeRegisterDefaults();
 
   adc.readRegisters();
-  adc.verifyRegisters();
+  //adc.verifyRegisters();
 }
 
 void loop() {

@@ -282,7 +282,12 @@ void MCP3561::printRegisters(void) {
 }
 
 void MCP3561::readADCData(void) {
+  //Serial.print("Data Read Interrupt Activated. data_counter: ");
+  //Serial.print(MCP3561::data_counter);
+  //Serial.print("/");
+  //Serial.println(MCP3561::data_points_to_sample);
   if(MCP3561::data_counter < MCP3561::data_points_to_sample) {
+    
     digitalWrite(CS_PIN, LOW);
     SPI.transfer(SREAD_DATA_COMMAND);
     MCP3561::adc_data[0] = SPI.transfer(0);
@@ -294,6 +299,7 @@ void MCP3561::readADCData(void) {
     MCP3561::data_counter += 1;
   }
   else {
+    //Serial.println("Read Complete. Detatching Interrupts.");
     detachInterrupt(digitalPinToInterrupt(IRQ_PIN));
     detachInterrupt(digitalPinToInterrupt(EXTERNAL_SYNC_PIN));
     MCP3561::data_counter = 0;

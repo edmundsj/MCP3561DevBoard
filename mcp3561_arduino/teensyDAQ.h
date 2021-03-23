@@ -38,7 +38,7 @@ void interruptRotate(void) {
 
 scpi_error_t identify(struct scpi_parser_context* context, struct scpi_token* command)
 {
-  Serial.println("OIC,Embedded SCPI Example,1,10");
+  Serial.println("MCP3561 Dev Board v1");
   scpi_free_tokens(command);
   return SCPI_SUCCESS;
 }

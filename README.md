@@ -22,22 +22,17 @@ Measured with MCLK=10MHz, OSR=256, fs=9.76kHz, Av=1
 Measured with MCLK=10MHz, OSR=256, fs=9.76kHz, Av=10
 - Rms voltage noise is 13.4uV, PSD=195nV/rtHz, 0.2kHz to fs/2
 
-![Fig. 1](figures/MCP3561DevBoard_grounded_representative.png)
-![Fig. 2](figures/MCP3561DevBoard_grounded.png)
-
-Fig. 1 and 2 show the time-domain and frequency-domain representation of 0.1s
-of measured signal with the input to the board grounded.
-
-![Fig. 3](figures/MCP3561DevBoard_10mVrms_representative.png)
-![Fig. 4](figures/MCP3561DevBoard_10mVrms.png)
+![Fig. 3](figures/MCP3561DevBoard~amplitude-0.01~frequency-105~TD~representative.png)
+![Fig. 4](figures/MCP3561DevBoard~amplitude-0.01~frequency-105~PSD~averaged.png)
 
 Fig. 3 and 4 show the same plots with an input signal of 10mVrms (Av=10) at
 105Hz.
 
-![Fig. 3](figures/MCP3561DevBoard_100mVrms_representative.png)
-![Fig. 4](figures/MCP3561DevBoard_100mVrms.png)
+![Fig. 3](figures/MCP3561DevBoard~amplitude-0.1~frequency-205~TD~representative.png)
+![Fig. 4](figures/MCP3561DevBoard~amplitude-0.1~frequency-205~PSD~averaged.png)
 
-Fig. 3 and 4 show the same plots with an input signal of 100mVrms (Av=10) at
+
+Fig. 5 and 6 show the same plots with an input signal of 100mVrms (Av=10) at
 205Hz. 
 
 ## Getting Started
